@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/internet_bloc/internet_bloc.dart';
@@ -31,32 +30,31 @@ class HomePage extends StatelessWidget {
   }
 
   Widget blocBody() {
-    return
-      BlocProvider(
+    return BlocProvider(
       create: (context) => UserBloc(
         RepositoryProvider.of<UserRepository>(context),
       )..add(LoadUserEvent()),
       child: StreamBuilder<Object>(
-        stream: null,
-        builder: (context, snapshot) {
-          return BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
-              if (state is UserLoadingState) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is UserLoadedState) {
-                List<UserModel> userList = state.users;
-                return ListView.builder(
-                    itemCount: userList.length,
-                    itemBuilder: (_, index) {
-                      return Padding(
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        child: Card(
-                            color: Theme.of(context).primaryColor,
-                            child: ListTile(
+          stream: null,
+          builder: (context, snapshot) {
+            return BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is UserLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is UserLoadedState) {
+                  List<UserModel> userList = state.users;
+                  return ListView.builder(
+                      itemCount: userList.length,
+                      itemBuilder: (_, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: Card(
+                              color: Theme.of(context).primaryColor,
+                              child: ListTile(
                                 title: Text(
                                   '${userList[index].firstName}  ${userList[index].lastName}',
                                   style: const TextStyle(color: Colors.white),
@@ -69,23 +67,25 @@ class HomePage extends StatelessWidget {
                                   backgroundImage: NetworkImage(
                                       userList[index].avatar.toString()),
                                 ),
-                            onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DetailedScreen(e: userList[index])));
-                            },)),
-                      );
-                    });
-              }
-              if (state is UserErrorState) {
-                return const Center(
-                  child: Text("Error"),
-                );
-              }
-          
-              return Container();
-            },
-          );
-        }
-      ),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailedScreen(e: userList[index])));
+                                },
+                              )),
+                        );
+                      });
+                }
+                if (state is UserErrorState) {
+                  return const Center(
+                    child: Text("Error"),
+                  );
+                }
+
+                return Container();
+              },
+            );
+          }),
     );
   }
 }
